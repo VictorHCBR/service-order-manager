@@ -8,13 +8,17 @@ public sealed class User : BaseEntity, IAggregateRoot
 {
     private User() { }
 
-    public User(string name, Email email, IEnumerable<Role> roles)
+    public User(string name, Email email, string passwordHash, IEnumerable<Role> roles)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new DomainException("Nome do usuário é obrigatório!");
 
+        if (string.IsNullOrWhiteSpace(passwordHash))
+            throw new DomainException("Hash da senha é obrigatório");
+
         Name = name.Trim();
         Email = email;
+        PasswordHash = passwordHash;
 
         foreach (var role in roles.DistinctBy(x => x.Name))
             AddRole(role);
@@ -25,6 +29,7 @@ public sealed class User : BaseEntity, IAggregateRoot
     
     public string Name { get; private set; } = string.Empty;
     public Email Email { get; private set; } = null!;
+    public string PasswordHash { get; private set; } = string.Empty;
     public bool IsActive { get; private set; } = true;
 
     public List<Role> Roles { get; private set; } = [];
