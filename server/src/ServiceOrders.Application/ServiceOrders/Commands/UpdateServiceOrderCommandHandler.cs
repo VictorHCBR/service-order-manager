@@ -9,7 +9,7 @@ public sealed class UpdateServiceOrderCommandHandler(IUnitOfWork unitOfWork)
 
     public async Task<Result<ServiceOrderDetailsDto>> HandleAsync(Guid id, UpdateServiceOrderRequest request, CancellationToken token)
     {
-        var order = await _unitOfWork.ServiceOrders.GetByIdAsync(id);
+        var order = await _unitOfWork.ServiceOrders.GetByIdAsync(id, token);
         if (order is null)
             return Result<ServiceOrderDetailsDto>.Failure("OS não encontrada!");
 
