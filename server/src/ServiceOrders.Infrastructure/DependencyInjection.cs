@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using ServiceOrders.Application.Abstractions;
+using ServiceOrders.Infrastructure.Persistence;
 using ServiceOrders.Infrastructure.Security;
 using System.Security.Claims;
 using System.Text;
@@ -13,6 +15,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddDbContext<AppDbContext>(options 
+            => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
